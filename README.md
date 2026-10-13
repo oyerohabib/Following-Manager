@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Instagram Following Manager
 
-## Getting Started
+A private, local-only web app that gives you an overview of everyone you follow on Instagram: who follows you back, who doesn't, stats about your following over time, and a fast unfollow queue.
 
-First, run the development server:
+## How it stays within Instagram's rules
+
+- **Official data only.** The app reads the export Instagram gives you through "Download your information". It never asks for your password, never logs in to Instagram, and never scrapes or calls private Instagram APIs, all of which Instagram's Terms of Use prohibit.
+- **You do the unfollowing.** The queue opens each profile in a single reusable browser tab. You tap Unfollow on Instagram yourself and record the decision in the app. Nothing is automated.
+- **Sensible pacing.** Instagram doesn't publish its limits, and many unfollows in a short time can trigger a temporary action block. The queue tracks your unfollows per day and warns you at a configurable limit (50 by default).
+- **Your data stays on your device.** Everything is parsed in the browser and stored in IndexedDB. There is no backend.
+
+## Getting your export
+
+1. Open [Accounts Center > Your information and permissions > Download your information](https://accountscenter.instagram.com/info_and_permissions/dyi/) (in the app: Settings > Accounts Center).
+2. Choose **Create export**, pick your Instagram profile, then **Export to device**.
+3. Under **Customize information**, select only **Followers and following**.
+4. Set the date range to **All time** and the format to **JSON**.
+5. When Instagram emails you, download the .zip and drop it into the app.
+
+The export contains usernames, profile links and follow dates. It does not include profile photos, bios or follower counts, so the app shows generated avatars instead.
+
+## Features
+
+- **Dashboard:** following, followers, mutuals, accounts that don't follow back, fans, follow-back rate, close friends, pending requests, busiest month, follows over time by month or year, oldest follows that never followed back, recent follows, tag breakdown, and a comparison with your previous import (new followers, people who stopped following you, and more).
+- **Following explorer:** a fast list that handles thousands of accounts, with search, filters, sorting, tags, a keep list, and bulk actions.
+- **Unfollow queue:** one account at a time with keyboard shortcuts: `O` or `Enter` to open the profile, `U` unfollowed, `K` keep, `S` skip, `Z` undo.
+- **Settings:** daily limit, backup and restore of tags and decisions, managing imports, and clearing all data.
+
+Import a fresh export every few weeks to keep the data current and see what changed.
+
+## Development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+pnpm dev      # http://localhost:3000
+pnpm test     # parser and metrics unit tests
+pnpm lint
+pnpm build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Stack: Next.js (App Router), React 19, TypeScript, Tailwind CSS v4, Dexie (IndexedDB), fflate (unzip in the browser), zod, Recharts, TanStack Virtual, Vitest.
