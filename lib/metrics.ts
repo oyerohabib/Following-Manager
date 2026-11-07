@@ -22,6 +22,7 @@ export function buildAccounts(
       followsMeSince: followers.get(username)?.timestamp,
       closeFriend: closeFriends.has(username),
       unfollowedHere: false,
+      gone: note?.gone ?? false,
       tags: note?.tags ?? [],
       keep: note?.keep ?? false,
       status: action?.status,
@@ -32,7 +33,8 @@ export function buildAccounts(
     const row = base(record.username, record.href);
     const action = acts.get(record.username);
     row.unfollowedHere = action?.status === "unfollowed" && action.updatedAt > snapshot.importedAt;
-    row.iFollow = !row.unfollowedHere;
+    // Gone accounts stay in the export but are not live follows for stats/queues.
+    row.iFollow = !row.unfollowedHere && !row.gone;
     row.followedAt = record.timestamp;
     rows.set(record.username, row);
   }
@@ -55,6 +57,7 @@ export interface Stats {
   pendingRequests: number;
   recentlyUnfollowed: number;
   unfollowedHere: number;
+  gone: number;
   kept: number;
   queued: number;
   busiestMonth?: { period: string; count: number };
@@ -83,6 +86,7 @@ export function computeStats(rows: AccountRow[], snapshot: Snapshot): Stats {
     pendingRequests: snapshot.pendingRequests.length,
     recentlyUnfollowed: snapshot.recentlyUnfollowed.length,
     unfollowedHere: rows.filter((r) => r.unfollowedHere).length,
+    gone: rows.filter((r) => r.gone).length,
     kept: rows.filter((r) => r.keep && r.iFollow).length,
     queued: rows.filter((r) => r.status === "queued" && r.iFollow).length,
     busiestMonth: busiest,
@@ -194,7 +198,8 @@ export type ExplorerTab =
   | "fans"
   | "kept"
   | "tagged"
-  | "unfollowed";
+  | "unfollowed"
+  | "gone";
 
 export type SortKey = "newest" | "oldest" | "az" | "za";
 
@@ -206,6 +211,7 @@ export const TAB_PREDICATES: Record<ExplorerTab, (r: AccountRow) => boolean> = {
   kept: (r) => r.iFollow && r.keep,
   tagged: (r) => r.tags.length > 0,
   unfollowed: (r) => r.unfollowedHere,
+  gone: (r) => r.gone,
 };
 
 export function filterRows(

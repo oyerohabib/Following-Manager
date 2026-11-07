@@ -27,6 +27,8 @@ export interface Annotation {
   username: string;
   tags: string[];
   keep: boolean;
+  /** User marked the Instagram profile as deleted or unavailable. */
+  gone?: boolean;
 }
 
 export type ActionStatus = "queued" | "unfollowed" | "kept" | "skipped";
@@ -48,6 +50,8 @@ export interface AccountRow {
   closeFriend: boolean;
   /** Marked as unfollowed in the app after this snapshot was imported. */
   unfollowedHere: boolean;
+  /** Profile no longer exists or is unavailable; excluded from live following counts. */
+  gone: boolean;
   tags: string[];
   keep: boolean;
   status?: ActionStatus;

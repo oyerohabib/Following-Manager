@@ -43,6 +43,18 @@ export async function setKeep(usernames: string[], keep: boolean) {
   });
 }
 
+export async function setGone(usernames: string[], gone: boolean) {
+  await db.transaction("rw", db.accounts, db.actions, async () => {
+    for (const username of usernames) {
+      await updateAnnotation(username, (a) => ({ ...a, gone, keep: gone ? false : a.keep }));
+      if (gone) {
+        const action = await db.actions.get(username);
+        if (action?.status === "queued") await db.actions.delete(username);
+      }
+    }
+  });
+}
+
 export async function addTag(usernames: string[], tag: string) {
   const clean = tag.trim().toLowerCase();
   if (!clean) return;
