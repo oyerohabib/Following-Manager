@@ -17,13 +17,13 @@ A private, local-only web app that gives you an overview of everyone you follow 
 4. Set the date range to **All time** and the format to **JSON**.
 5. When Instagram emails you, download the .zip and drop it into the app.
 
-The export contains usernames, profile links and follow dates. It does not include profile photos, bios or follower counts, so the app shows generated avatars instead.
+The export contains usernames, profile links and follow dates. It does not include profile photos, bios or follower counts, so the app shows generated avatars instead. The export can also include deleted or suspended accounts that Instagram's live Following count hides; mark those as **Gone** in Following or the unfollow queue (`G`) so they drop out of your live stats.
 
 ## Features
 
 - **Dashboard:** following, followers, mutuals, accounts that don't follow back, fans, follow-back rate, close friends, pending requests, busiest month, follows over time by month or year, oldest follows that never followed back, recent follows, tag breakdown, and a comparison with your previous import (new followers, people who stopped following you, and more).
 - **Following explorer:** a fast list that handles thousands of accounts, with search, filters, sorting, tags, a keep list, and bulk actions.
-- **Unfollow queue:** one account at a time with keyboard shortcuts: `O` or `Enter` to open the profile, `U` unfollowed, `K` keep, `S` skip, `Z` undo.
+- **Unfollow queue:** one account at a time with keyboard shortcuts: `O` or `Enter` to open the profile, `U` unfollowed, `K` keep, `S` skip, `G` gone, `Z` undo.
 - **Settings:** daily limit, backup and restore of tags and decisions, managing imports, and clearing all data.
 
 Import a fresh export every few weeks to keep the data current and see what changed.
