@@ -67,6 +67,14 @@ export default function DashboardPage() {
           <p className="text-sm text-muted">
             From {latest.sourceName}, imported {formatDate(latest.importedAt)}
           </p>
+          <p className="mt-1 max-w-xl text-xs text-muted">
+            Export counts can include deleted accounts that Instagram&apos;s live Following number hides. Mark them as{" "}
+            <Link href="/following?tab=gone" className="text-white underline-offset-2 hover:underline">
+              Gone
+            </Link>{" "}
+            in Following or the unfollow queue to exclude them
+            {stats.gone > 0 ? ` (${formatNumber(stats.gone)} marked)` : ""}.
+          </p>
         </div>
         <Link href="/following?tab=notFollowingBack" className="rounded-xl bg-ig-gradient px-4 py-2 text-sm font-semibold text-white">
           Review who doesn&apos;t follow back
@@ -96,7 +104,7 @@ export default function DashboardPage() {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-5">
         <StatCard
           label="Close friends"
           value={formatNumber(stats.closeFriends)}
@@ -108,6 +116,12 @@ export default function DashboardPage() {
           value={formatNumber(stats.unfollowedHere)}
           hint={`${stats.queued} queued, ${stats.kept} kept`}
           href="/queue"
+        />
+        <StatCard
+          label="Gone"
+          value={formatNumber(stats.gone)}
+          hint="Deleted or unavailable profiles"
+          href="/following?tab=gone"
         />
         <StatCard
           label="Busiest month"
