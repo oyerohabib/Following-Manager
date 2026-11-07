@@ -10,7 +10,14 @@ import { useSetting } from "@/lib/hooks";
 
 const backupSchema = z.object({
   version: z.literal(1),
-  accounts: z.array(z.object({ username: z.string(), tags: z.array(z.string()), keep: z.boolean() })),
+  accounts: z.array(
+    z.object({
+      username: z.string(),
+      tags: z.array(z.string()),
+      keep: z.boolean(),
+      gone: z.boolean().optional(),
+    }),
+  ),
   actions: z.array(
     z.object({
       username: z.string(),
@@ -84,10 +91,10 @@ export default function SettingsPage() {
       </Card>
 
       <Card>
-        <CardTitle>Back up tags, keep list and queue</CardTitle>
+        <CardTitle>Back up tags, keep list, gone marks and queue</CardTitle>
         <p className="mb-3 text-sm text-muted">
-          Your Instagram export can always be imported again, but tags and decisions only live in this browser. Save
-          them to a file to move them to another browser or keep them safe.
+          Your Instagram export can always be imported again, but tags, gone marks and decisions only live in this
+          browser. Save them to a file to move them to another browser or keep them safe.
         </p>
         <div className="flex flex-wrap gap-2">
           <Button onClick={exportBackup}>Download backup</Button>
