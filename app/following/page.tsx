@@ -6,7 +6,7 @@ import { Suspense, useMemo, useState } from "react";
 import { AccountTable } from "@/components/AccountTable";
 import { TagPicker } from "@/components/TagPicker";
 import { Button, cx, NoDataYet } from "@/components/ui";
-import { addTag, dequeue, enqueue, setKeep } from "@/lib/db";
+import { addTag, dequeue, enqueue, setGone, setKeep } from "@/lib/db";
 import { formatNumber } from "@/lib/format";
 import { useAppData } from "@/lib/hooks";
 import { type ExplorerTab, filterRows, type SortKey, TAB_PREDICATES } from "@/lib/metrics";
@@ -19,6 +19,7 @@ const TABS: { id: ExplorerTab; label: string }[] = [
   { id: "kept", label: "Kept" },
   { id: "tagged", label: "Tagged" },
   { id: "unfollowed", label: "Unfollowed" },
+  { id: "gone", label: "Gone" },
 ];
 
 function Explorer() {
@@ -69,7 +70,8 @@ function Explorer() {
         <div>
           <h1 className="text-2xl font-bold text-white">Following</h1>
           <p className="text-sm text-muted">
-            Select accounts to tag them, keep them, or add them to your unfollow queue.
+            Select accounts to tag them, keep them, mark them gone, or add them to your unfollow queue. Gone accounts
+            (deleted or unavailable) are excluded from Following counts.
           </p>
         </div>
         <Link href="/queue" className="rounded-xl bg-white/8 px-4 py-2 text-sm font-semibold text-white hover:bg-white/14">
@@ -148,6 +150,12 @@ function Explorer() {
           </Button>
           <Button size="sm" onClick={() => setKeep(selectedNames, false)}>
             Unkeep
+          </Button>
+          <Button size="sm" onClick={() => setGone(selectedNames, true)}>
+            Mark gone
+          </Button>
+          <Button size="sm" onClick={() => setGone(selectedNames, false)}>
+            Ungone
           </Button>
           <TagPicker allTags={allTags} onSelect={(t) => addTag(selectedNames, t)} />
           <Button size="sm" variant="ghost" className="ml-auto" onClick={() => setSelected(new Set())}>

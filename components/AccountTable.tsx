@@ -2,7 +2,7 @@
 
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useRef } from "react";
-import { addTag, dequeue, enqueue, removeTag, setKeep } from "@/lib/db";
+import { addTag, dequeue, enqueue, removeTag, setGone, setKeep } from "@/lib/db";
 import { formatAge, formatDate, profileUrl } from "@/lib/format";
 import type { AccountRow } from "@/lib/types";
 import { TagPicker } from "./TagPicker";
@@ -11,10 +11,11 @@ import { Avatar, Badge, Button, cx } from "./ui";
 function RelationshipBadges({ row }: { row: AccountRow }) {
   return (
     <>
+      {row.gone && <Badge tone="gray">Gone</Badge>}
       {row.unfollowedHere && <Badge tone="gray">Unfollowed</Badge>}
       {row.iFollow && row.followsMe && <Badge tone="green">Mutual</Badge>}
       {row.iFollow && !row.followsMe && <Badge tone="red">Doesn&apos;t follow back</Badge>}
-      {!row.iFollow && row.followsMe && <Badge tone="blue">Follows you</Badge>}
+      {!row.iFollow && !row.gone && row.followsMe && <Badge tone="blue">Follows you</Badge>}
       {row.closeFriend && <Badge tone="purple">Close friend</Badge>}
       {row.keep && <Badge tone="amber">Keep</Badge>}
       {row.status === "queued" && row.iFollow && <Badge tone="purple">Queued</Badge>}
@@ -102,6 +103,14 @@ export function AccountTable({
               </div>
               <div className="hidden items-center gap-1.5 sm:flex">
                 <TagPicker allTags={allTags} label="+ Tag" align="right" onSelect={(t) => addTag([row.username], t)} />
+                <Button
+                  size="sm"
+                  variant={row.gone ? "secondary" : "ghost"}
+                  onClick={() => setGone([row.username], !row.gone)}
+                  title="Profile deleted or unavailable"
+                >
+                  {row.gone ? "Gone" : "Gone?"}
+                </Button>
                 {row.iFollow && (
                   <Button
                     size="sm"
