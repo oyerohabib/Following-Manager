@@ -49,6 +49,25 @@ describe("buildAccounts and computeStats", () => {
     const stats = computeStats(buildAccounts(newSnap, [], []), newSnap);
     expect(stats).toMatchObject({ closeFriends: 1, closeFriendsFollowingBack: 1, pendingRequests: 1 });
   });
+
+  it("excludes gone accounts from live following stats", () => {
+    const rows = buildAccounts(
+      oldSnap,
+      [{ username: "bob", tags: [], keep: false, gone: true }],
+      [],
+    );
+    const bob = rows.find((r) => r.username === "bob")!;
+    expect(bob).toMatchObject({ iFollow: false, gone: true });
+    expect(computeStats(rows, oldSnap)).toMatchObject({
+      following: 1,
+      mutuals: 1,
+      notFollowingBack: 0,
+      gone: 1,
+    });
+    expect(filterRows(rows, { tab: "gone", sort: "az" }).map((r) => r.username)).toEqual(["bob"]);
+    expect(filterRows(rows, { tab: "following", sort: "az" }).map((r) => r.username)).toEqual(["alice"]);
+    expect(filterRows(rows, { tab: "notFollowingBack", sort: "az" })).toHaveLength(0);
+  });
 });
 
 describe("timeline", () => {
