@@ -102,6 +102,7 @@ export default function QueuePage() {
               <li><Kbd>U</Kbd> mark as unfollowed</li>
               <li><Kbd>K</Kbd> keep following, never suggest again</li>
               <li><Kbd>S</Kbd> skip for now</li>
+              <li><Kbd>G</Kbd> mark as gone (deleted or unavailable)</li>
               <li><Kbd>Z</Kbd> undo</li>
             </ul>
           </Card>

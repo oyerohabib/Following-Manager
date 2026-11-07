@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { restoreAction, setKeep, setStatus } from "@/lib/db";
+import { restoreAction, setGone, setKeep, setStatus } from "@/lib/db";
 import { formatAge, formatDate, formatNumber, profileUrl } from "@/lib/format";
 import { unfollowedToday } from "@/lib/metrics";
 import type { AccountRow, Action, ActionStatus } from "@/lib/types";
@@ -11,6 +11,8 @@ interface UndoEntry {
   previous: Action;
   username: string;
   wasKept: boolean;
+  wasGone: boolean;
+  kind: "status" | "gone";
 }
 
 function openProfile(username: string) {
@@ -52,7 +54,13 @@ export function QueueReviewer({
       const previous = actionMap.get(current.username);
       if (!previous) return;
       handled.current.add(current.username);
-      undoStack.current.push({ previous, username: current.username, wasKept: current.keep });
+      undoStack.current.push({
+        previous,
+        username: current.username,
+        wasKept: current.keep,
+        wasGone: current.gone,
+        kind: "status",
+      });
       setReviewed(undoStack.current.length);
       if (status === "kept") await setKeep([current.username], true);
       else await setStatus(current.username, status);
@@ -60,11 +68,28 @@ export function QueueReviewer({
     [current, actionMap],
   );
 
+  const markGone = useCallback(async () => {
+    if (!current || handled.current.has(current.username)) return;
+    const previous = actionMap.get(current.username);
+    if (!previous) return;
+    handled.current.add(current.username);
+    undoStack.current.push({
+      previous,
+      username: current.username,
+      wasKept: current.keep,
+      wasGone: current.gone,
+      kind: "gone",
+    });
+    setReviewed(undoStack.current.length);
+    await setGone([current.username], true);
+  }, [current, actionMap]);
+
   const undoLast = useCallback(async () => {
     const last = undoStack.current.pop();
     if (!last) return;
     setReviewed(undoStack.current.length);
     handled.current.delete(last.username);
+    if (last.kind === "gone") await setGone([last.username], last.wasGone);
     if (!last.wasKept) await setKeep([last.username], false);
     await restoreAction(last.previous);
   }, []);
@@ -92,6 +117,7 @@ export function QueueReviewer({
         u: () => decide("unfollowed"),
         k: () => decide("kept"),
         s: () => decide("skipped"),
+        g: markGone,
       };
       if (handlers[key]) {
         e.preventDefault();
@@ -100,7 +126,7 @@ export function QueueReviewer({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, decide, undoLast]);
+  }, [open, decide, markGone, undoLast]);
 
   const total = reviewed + queue.length;
 
@@ -175,6 +201,9 @@ export function QueueReviewer({
             </Button>
             <Button variant="ghost" onClick={() => decide("skipped")}>
               Skip <Kbd>S</Kbd>
+            </Button>
+            <Button variant="ghost" onClick={markGone} title="Profile deleted or unavailable">
+              Gone <Kbd>G</Kbd>
             </Button>
             <Button variant="ghost" onClick={undoLast} disabled={reviewed === 0}>
               Undo <Kbd>Z</Kbd>
