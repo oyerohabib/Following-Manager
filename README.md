@@ -1,6 +1,12 @@
-# Instagram Following Manager
+# <img src="docs/logo.svg" alt="" width="36" height="36" align="left" /> Instagram Following Manager
 
 A private, local-only web app that gives you an overview of everyone you follow on Instagram: who follows you back, who doesn't, stats about your following over time, and a fast unfollow queue.
+
+I built this as a personal tool first. My following list had grown into years of old accounts I barely remembered—people I meant to unfollow “later,” brands that no longer mattered, and profiles that made the Instagram app painful to review one by one. I wanted a clearer view of everything happening without logging into Instagram through a third party or automating anything that could get an account restricted.
+
+| Import | Dashboard |
+| :---: | :---: |
+| <img src="docs/screenshots/import.png" alt="Import page: drop your Instagram export and follow the official download steps" width="100%" /> | <img src="docs/screenshots/dashboard.png" alt="Dashboard with following stats, follow-back rate, and follows over time" width="100%" /> |
 
 ## How it stays within Instagram's rules
 
