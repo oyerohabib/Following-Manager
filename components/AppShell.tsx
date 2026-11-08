@@ -81,43 +81,46 @@ export function AppShell({ children }: { children: ReactNode }) {
 
           <NavLinks pathname={pathname} className="hidden flex-1 gap-1 md:flex" />
 
-          <span className="ml-auto hidden text-xs text-muted md:inline">Data stays on this device</span>
-
-          <button
-            type="button"
-            className="ml-auto inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted transition-colors hover:bg-white/8 hover:text-white md:hidden"
-            aria-expanded={open}
-            aria-controls={menuId}
-            aria-label={open ? "Close menu" : "Open menu"}
-            onClick={() => {
-              if (open) setMenuOpen(false);
-              else {
-                setMenuPath(pathname);
-                setMenuOpen(true);
-              }
-            }}
-          >
-            <span className="relative block h-3.5 w-4" aria-hidden>
-              <span
-                className={cx(
-                  "absolute left-0 top-0 h-0.5 w-full rounded-full bg-current transition-all duration-300 ease-out",
-                  open ? "translate-y-[6px] rotate-45" : "translate-y-0 rotate-0",
-                )}
-              />
-              <span
-                className={cx(
-                  "absolute left-0 top-[6px] h-0.5 w-full rounded-full bg-current transition-all duration-200 ease-out",
-                  open ? "scale-x-0 opacity-0" : "scale-x-100 opacity-100",
-                )}
-              />
-              <span
-                className={cx(
-                  "absolute left-0 top-[12px] h-0.5 w-full rounded-full bg-current transition-all duration-300 ease-out",
-                  open ? "translate-y-[-6px] -rotate-45" : "translate-y-0 rotate-0",
-                )}
-              />
+          <div className="ml-auto flex shrink-0 items-center gap-2">
+            <span className="max-w-[9.5rem] truncate text-right text-[11px] leading-tight text-muted sm:max-w-none sm:text-xs">
+              Data stays on this device
             </span>
-          </button>
+            <button
+              type="button"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted transition-colors hover:bg-white/8 hover:text-white md:hidden"
+              aria-expanded={open}
+              aria-controls={menuId}
+              aria-label={open ? "Close menu" : "Open menu"}
+              onClick={() => {
+                if (open) setMenuOpen(false);
+                else {
+                  setMenuPath(pathname);
+                  setMenuOpen(true);
+                }
+              }}
+            >
+              <span className="relative block h-3.5 w-4" aria-hidden>
+                <span
+                  className={cx(
+                    "absolute left-0 top-0 h-0.5 w-full rounded-full bg-current transition-all duration-300 ease-out",
+                    open ? "translate-y-[6px] rotate-45" : "translate-y-0 rotate-0",
+                  )}
+                />
+                <span
+                  className={cx(
+                    "absolute left-0 top-[6px] h-0.5 w-full rounded-full bg-current transition-all duration-200 ease-out",
+                    open ? "scale-x-0 opacity-0" : "scale-x-100 opacity-100",
+                  )}
+                />
+                <span
+                  className={cx(
+                    "absolute left-0 top-[12px] h-0.5 w-full rounded-full bg-current transition-all duration-300 ease-out",
+                    open ? "translate-y-[-6px] -rotate-45" : "translate-y-0 rotate-0",
+                  )}
+                />
+              </span>
+            </button>
+          </div>
         </div>
 
         <div
@@ -139,7 +142,6 @@ export function AppShell({ children }: { children: ReactNode }) {
                 onNavigate={() => setMenuOpen(false)}
                 className="flex flex-col gap-1 px-4 py-3"
               />
-              <p className="px-7 pb-4 text-xs text-muted">Data stays on this device</p>
             </div>
           </div>
         </div>
